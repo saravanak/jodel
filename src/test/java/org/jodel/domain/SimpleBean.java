@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.jodel.store;
+package org.jodel.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,6 +18,10 @@ public class SimpleBean {
     private String name;
     
     private Integer age;
+    
+    private Double salary;
+    
+    private Boolean isMale;
 
     public String getName() {
         return name;
@@ -33,6 +37,22 @@ public class SimpleBean {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
+    }
+
+    public Boolean isIsMale() {
+        return isMale;
+    }
+
+    public void setIsMale(Boolean isMale) {
+        this.isMale = isMale;
     }
     
     
