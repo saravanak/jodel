@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author sathish_ku
  */
-public class SimpleBean {
+public class SampleBean {
     
     @JsonProperty(required = true)
     private String name;

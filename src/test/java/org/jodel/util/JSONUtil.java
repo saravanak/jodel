@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import org.jodel.domain.SimpleBean;
+import org.jodel.domain.SampleBean;
 
 /**
  *
@@ -31,11 +31,7 @@ public class JSONUtil {
         objectMapper = new ObjectMapper();
     }
 
-    public JsonSchema getSampleJsonSchema() throws JsonMappingException {
-        SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
-        objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(SimpleBean.class), visitor);
-        return visitor.finalSchema();
-    }
+
 
     public Map<String, String> getJsonStringObject(String name) throws IOException {
         Map<String, String> map;

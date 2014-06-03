@@ -5,9 +5,12 @@
  */
 package org.jodel.store;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.*;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,10 +20,14 @@ import java.util.Map;
  */
 public class DataStore {
 
+    public Map<String, Object> getObject(Class type, Map<String, String> jsonData) throws JsonMappingException {
+        return getObject(getJsonSchema(type),jsonData);
+    }
+
     /**
      *
      * Gets a Raw JSON String and converts that as JSON Schema compatible JSON
-     * 
+     *
      * @param jsonSchema - Schema which will be validated against the data
      * @param jsonData - data to be processed
      * @return
@@ -36,6 +43,13 @@ public class DataStore {
             }
         }
         return validatedData;
+    }
+
+    public JsonSchema getJsonSchema(Class type) throws JsonMappingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
+        objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
+        return visitor.finalSchema();
     }
 
     private Object getConvertedObject(JsonFormatTypes formatTypes, String value) {

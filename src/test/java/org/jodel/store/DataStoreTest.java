@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import org.jodel.domain.SimpleBean;
+import org.jodel.domain.SampleBean;
 import org.jodel.util.JSONUtil;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -62,16 +62,15 @@ public class DataStoreTest {
      */
     @Test
     public void testGetObject() throws JsonMappingException, IOException {
-        JsonSchema jsonSchema = jSONUtil.getSampleJsonSchema();
         Map<String, String> jsonData = jSONUtil.getJsonStringObject("sample");
         
-        System.out.println("Before");
+        System.out.println("\nBefore");
         System.out.println("===================================");
         System.out.println(jSONUtil.getAsJsonString(jsonData));
         
-        Map<String, Object> validatedJsonData = dataStore.getObject(jsonSchema, jsonData);
+        Map<String, Object> validatedJsonData = dataStore.getObject(SampleBean.class, jsonData);
         
-        System.out.println("After");
+        System.out.println("\nAfter");
         System.out.println("===================================");
         System.out.println(jSONUtil.getAsJsonString(validatedJsonData));
     }
