@@ -44,7 +44,7 @@ public class DataStore {
             for (Map.Entry<String, String> dataProperty : jsonData.entrySet()) {
                 String key = dataProperty.getKey();
                 String value = dataProperty.getValue();
-                validatedData.put(key, getConvertedObject(properties.get(key).getType(), value));
+                validatedData.put(key, getConvertedObject(properties.get(key), value));
             }
         }
         return validatedData;
@@ -63,9 +63,9 @@ public class DataStore {
         return schema;
     }
 
-    private Object getConvertedObject(JsonFormatTypes formatTypes, String value) {
+    private Object getConvertedObject(JsonSchema jsonSchema, String value) {
         Object convertedValue = value;
-        switch (formatTypes) {
+        switch (jsonSchema.getType()) {
             case INTEGER:
                 convertedValue = Integer.parseInt(value);
                 break;
