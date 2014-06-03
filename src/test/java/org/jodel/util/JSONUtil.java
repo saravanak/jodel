@@ -61,6 +61,11 @@ public class JSONUtil {
         return builder.toString();
     }
 
+    public JsonSchema getJsonSchema(String jsonSchemaAsString) throws IOException {
+        JsonSchema schema = objectMapper.readValue(jsonSchemaAsString, JsonSchema.class);
+        return schema;
+    }
+
     public String getAsJsonString(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }

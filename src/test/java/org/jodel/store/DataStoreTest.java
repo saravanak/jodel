@@ -6,6 +6,7 @@
 package org.jodel.store;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import java.io.IOException;
 import java.util.Map;
 import org.jodel.domain.SampleBean;
@@ -54,23 +55,15 @@ public class DataStoreTest {
     @Test
     public void testGetObject() throws JsonMappingException, IOException {
         Map<String, String> jsonData = jSONUtil.getJsonStringObject("sample");
-        
-        System.out.println("\nBefore");
+
+        JsonSchema jsonSchema = jSONUtil.getJsonSchema(jSONUtil.getJsonSchemaAsString("sample"));
+
+        JsonSchema propSchema = jsonSchema.asObjectSchema().getProperties().get("name");
+
+        System.out.println("\nSchema");
         System.out.println("===================================");
-        System.out.println(jSONUtil.getAsJsonString(jsonData));
-        
-        Map<String, Object> validatedJsonData = dataStore.getObject(SampleBean.class, jsonData);
-        
-        System.out.println("\nAfter POJO");
-        System.out.println("===================================");
-        System.out.println(jSONUtil.getAsJsonString(validatedJsonData));
-        
-        Map<String, Object> validatedJsonData2 = dataStore.getObject(jSONUtil.getJsonSchemaAsString("sample"), jsonData);
-        
-        System.out.println("\nAfter String");
-        System.out.println("===================================");
-        System.out.println(jSONUtil.getAsJsonString(validatedJsonData2));
+        System.out.println(jSONUtil.getAsJsonString(propSchema));
+
     }
 
-    
 }

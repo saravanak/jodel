@@ -6,7 +6,8 @@
         },
         "name": {
             "type": "string",
-            "required": true
+            "required": true,
+            "id": true
         },
         "salary": {
             "type": "number"
