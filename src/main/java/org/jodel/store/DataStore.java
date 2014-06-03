@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.*;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,10 @@ public class DataStore {
 
     public Map<String, Object> getObject(Class type, Map<String, String> jsonData) throws JsonMappingException {
         return getObject(getJsonSchema(type),jsonData);
+    }
+    
+    public Map<String, Object> getObject(String jsonSchemaAsString, Map<String, String> jsonData) throws IOException {
+        return getObject(getJsonSchema(jsonSchemaAsString),jsonData);
     }
 
     /**
@@ -50,6 +55,12 @@ public class DataStore {
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
         objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
         return visitor.finalSchema();
+    }
+    
+    private JsonSchema getJsonSchema(String jsonSchemaAsString) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonSchema schema = objectMapper.readValue(jsonSchemaAsString, JsonSchema.class);
+        return schema;
     }
 
     private Object getConvertedObject(JsonFormatTypes formatTypes, String value) {

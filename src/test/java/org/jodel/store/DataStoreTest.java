@@ -5,17 +5,8 @@
  */
 package org.jodel.store;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Map;
 import org.jodel.domain.SampleBean;
 import org.jodel.util.JSONUtil;
@@ -70,9 +61,15 @@ public class DataStoreTest {
         
         Map<String, Object> validatedJsonData = dataStore.getObject(SampleBean.class, jsonData);
         
-        System.out.println("\nAfter");
+        System.out.println("\nAfter POJO");
         System.out.println("===================================");
         System.out.println(jSONUtil.getAsJsonString(validatedJsonData));
+        
+        Map<String, Object> validatedJsonData2 = dataStore.getObject(jSONUtil.getJsonSchemaAsString("sample"), jsonData);
+        
+        System.out.println("\nAfter String");
+        System.out.println("===================================");
+        System.out.println(jSONUtil.getAsJsonString(validatedJsonData2));
     }
 
     
