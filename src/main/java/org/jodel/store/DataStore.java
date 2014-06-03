@@ -45,7 +45,7 @@ public class DataStore {
         return validatedData;
     }
 
-    public JsonSchema getJsonSchema(Class type) throws JsonMappingException {
+    private JsonSchema getJsonSchema(Class type) throws JsonMappingException {
         ObjectMapper objectMapper = new ObjectMapper();
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
         objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
