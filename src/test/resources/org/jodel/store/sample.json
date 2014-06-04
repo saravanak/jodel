@@ -1,5 +1,6 @@
 {
     "name": "sathish_ku",
     "age": "32",
-    "isMale":"true"
+    "isMale":"true",
+    "longSalary":"9223372036854775807"
 }

@@ -67,7 +67,7 @@ public class Validator {
         Object convertedValue = value;
         switch (jsonSchema.getType()) {
             case INTEGER:
-                convertedValue = Integer.parseInt(value);
+                convertedValue = Long.parseLong(value);
                 break;
             case NUMBER:
                 convertedValue = Double.parseDouble(value);
