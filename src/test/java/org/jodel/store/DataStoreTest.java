@@ -6,10 +6,10 @@
 package org.jodel.store;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import java.io.IOException;
 import java.util.Map;
-import org.jodel.domain.SampleBean;
 import org.jodel.util.JSONUtil;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,9 +60,12 @@ public class DataStoreTest {
 
         JsonSchema propSchema = jsonSchema.asObjectSchema().getProperties().get("name");
 
-        System.out.println("\nSchema");
+        ObjectMapper m = new ObjectMapper();
+        Map<String, Object> props = m.convertValue(propSchema, Map.class);
+
+        System.out.println("\nID");
         System.out.println("===================================");
-        System.out.println(jSONUtil.getAsJsonString(propSchema));
+        System.out.println(props.get("id"));
 
     }
 
