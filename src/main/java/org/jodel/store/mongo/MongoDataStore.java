@@ -5,18 +5,21 @@
  */
 package org.jodel.store.mongo;
 
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jodel.store.DataStore;
 
 /**
  *
  * @author sathish_ku
  */
-public class MongoDataStore {
+public class MongoDataStore extends DataStore {
 
     private DB db;
 
@@ -29,11 +32,16 @@ public class MongoDataStore {
         }
     }
 
-    private void getCollectionNames()  {
+    private void getCollectionNames() {
         Set<String> colls = db.getCollectionNames();
         for (String s : colls) {
             System.out.println(s);
         }
+    }
+
+    @Override
+    public Map<String, Object> create(Map<String, Object> validatedDataObject, JsonSchema jsonSchema) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public static void main(String[] args) {
@@ -41,4 +49,5 @@ public class MongoDataStore {
         mongoDataStore.getCollectionNames();
 
     }
+
 }

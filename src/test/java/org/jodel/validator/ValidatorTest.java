@@ -45,18 +45,18 @@ public class ValidatorTest {
     public void testGetObjectFromPOJO() throws IOException {
         System.out.println("\nPOJO Based");
         Map<String, String> stringDataObject = jSONUtil.getJsonStringObject("sample");
-        Map<String, Object> validatedObject = validator.getObject(SampleBean.class, stringDataObject);
+        ValidatedObject validatedObject = validator.getObject(SampleBean.class, stringDataObject);
         System.out.println("stringDataObject " + jSONUtil.getAsJsonString(stringDataObject));
-        System.out.println("validatedObject " + jSONUtil.getAsJsonString(validatedObject));
+        System.out.println("validatedObject " + jSONUtil.getAsJsonString(validatedObject.getDataObject()));
     }
 
     @Test
     public void testGetObjectFromString() throws IOException {
         System.out.println("\nString Based");
         Map<String, String> stringDataObject = jSONUtil.getJsonStringObject("sample");
-        Map<String, Object> validatedObject = validator.getObject(jSONUtil.getJsonSchemaAsString("sample"), stringDataObject);
+        ValidatedObject validatedObject = validator.getObject(jSONUtil.getJsonSchemaAsString("sample"), stringDataObject);
         System.out.println("stringDataObject " + jSONUtil.getAsJsonString(stringDataObject));
-        System.out.println("validatedObject " + jSONUtil.getAsJsonString(validatedObject));
+        System.out.println("validatedObject " + jSONUtil.getAsJsonString(validatedObject.getDataObject()));
     }
 
 }

@@ -21,12 +21,14 @@ import java.util.Map;
  */
 public class Validator {
     
-    public Map<String, Object> getObject(Class type, Map<String, String> jsonData) throws JsonMappingException {
-        return getObject(getJsonSchema(type),jsonData);
+    public ValidatedObject getObject(Class type, Map<String, String> jsonData) throws JsonMappingException {
+        JsonSchema jsonSchema =  getJsonSchema(type);
+        return new ValidatedObject(jsonSchema,getObject(jsonSchema,jsonData));
     }
     
-    public Map<String, Object> getObject(String jsonSchemaAsString, Map<String, String> jsonData) throws IOException {
-        return getObject(getJsonSchema(jsonSchemaAsString),jsonData);
+    public ValidatedObject getObject(String jsonSchemaAsString, Map<String, String> jsonData) throws IOException {
+        JsonSchema jsonSchema =  getJsonSchema(jsonSchemaAsString);
+        return new ValidatedObject(jsonSchema,getObject(jsonSchema,jsonData));
     }
 
     /**
