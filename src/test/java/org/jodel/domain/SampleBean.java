@@ -19,10 +19,20 @@ public class SampleBean {
     
     private Integer age;
     
+    private Long longSalary;
+    
     private Double salary;
     
     private Boolean isMale;
 
+    public Long getLongSalary() {
+        return longSalary;
+    }
+
+    public void setLongSalary(Long longSalary) {
+        this.longSalary = longSalary;
+    }    
+    
     public String getName() {
         return name;
     }
