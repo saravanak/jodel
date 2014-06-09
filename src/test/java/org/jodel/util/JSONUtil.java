@@ -38,8 +38,8 @@ public class JSONUtil {
         return getJsonString(JSON_SCHEMA_BASE_FOLDER, name);
     }
 
-    public Map<String, String> getJsonStringObject(String name) throws IOException {
-        Map<String, String> map;
+    public Map<String, Object> getJsonStringObject(String name) throws IOException {
+        Map<String, Object> map;
         map = objectMapper.readValue(getJsonString(JSON_DATA_BASE_FOLDER, name),
                 new TypeReference<HashMap<String, String>>() {
                 });

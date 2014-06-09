@@ -33,7 +33,8 @@ public abstract class DataStore {
      * @throws com.fasterxml.jackson.databind.JsonMappingException
      */
     public <T> T create(Class<T> clazz,Object object) throws JsonMappingException {
-        ValidatedObject validatedObject = validator.getObject(clazz, null);
+        ValidatedObject validatedObject = validator.getObject(object);
+        Map<String,Object> map = create(validatedObject.getDataObject(),validatedObject.getJsonSchema());
         return null;        
     }
 

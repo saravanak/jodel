@@ -41,7 +41,8 @@ public class MongoDataStore extends DataStore {
 
     @Override
     public Map<String, Object> create(Map<String, Object> validatedDataObject, JsonSchema jsonSchema) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String idField = validator.getIDField(jsonSchema);
+        return null;        
     }
 
     public static void main(String[] args) {

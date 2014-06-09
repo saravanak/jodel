@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.jodel.validator;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -20,15 +19,46 @@ import java.util.Map;
  * @author praveen
  */
 public class Validator {
-    
-    public ValidatedObject getObject(Class type, Map<String, String> jsonData) throws JsonMappingException {
-        JsonSchema jsonSchema =  getJsonSchema(type);
-        return new ValidatedObject(jsonSchema,getObject(jsonSchema,jsonData));
+
+    private final ObjectMapper objectMapper;
+
+    public Validator() {
+        objectMapper = new ObjectMapper();
     }
     
-    public ValidatedObject getObject(String jsonSchemaAsString, Map<String, String> jsonData) throws IOException {
-        JsonSchema jsonSchema =  getJsonSchema(jsonSchemaAsString);
-        return new ValidatedObject(jsonSchema,getObject(jsonSchema,jsonData));
+    public String getIDField(JsonSchema jsonSchema) {
+        String idField = null ;
+        if (jsonSchema.getType().equals(OBJECT)) {
+            Map<String, JsonSchema> properties = jsonSchema.asObjectSchema().getProperties();
+            Map<String,Object> propSchema ;
+            Object idValue ;
+            for (Map.Entry<String, JsonSchema> property : properties.entrySet()) {
+                propSchema = objectMapper.convertValue(property.getValue(), Map.class);  
+                idValue = propSchema.get("id") ;
+                if(idValue != null) {
+                    System.out.println( property.getKey() + " Id value is " + idValue);
+                }
+            }
+        }
+        return idField;        
+    }
+
+    public ValidatedObject getObject(Object dataObj) throws JsonMappingException {
+        ValidatedObject validatedObject = null;
+        if (dataObj != null) {
+            validatedObject = getObject(dataObj.getClass(), objectMapper.convertValue(dataObj, Map.class));
+        }
+        return validatedObject;
+    }
+
+    public ValidatedObject getObject(Class type, Map<String, Object> jsonData) throws JsonMappingException {
+        JsonSchema jsonSchema = getJsonSchema(type);
+        return new ValidatedObject(jsonSchema, getObject(jsonSchema, jsonData));
+    }
+
+    public ValidatedObject getObject(String jsonSchemaAsString, Map<String, Object> jsonData) throws IOException {
+        JsonSchema jsonSchema = getJsonSchema(jsonSchemaAsString);
+        return new ValidatedObject(jsonSchema, getObject(jsonSchema, jsonData));
     }
 
     /**
@@ -39,13 +69,13 @@ public class Validator {
      * @param jsonData - data to be processed
      * @return
      */
-    private Map<String, Object> getObject(JsonSchema jsonSchema, Map<String, String> jsonData) {
+    private Map<String, Object> getObject(JsonSchema jsonSchema, Map<String, Object> jsonData) {
         Map<String, Object> validatedData = new HashMap<>();
         if (jsonSchema.getType().equals(OBJECT)) {
             Map<String, JsonSchema> properties = jsonSchema.asObjectSchema().getProperties();
-            for (Map.Entry<String, String> dataProperty : jsonData.entrySet()) {
+            for (Map.Entry<String, Object> dataProperty : jsonData.entrySet()) {
                 String key = dataProperty.getKey();
-                String value = dataProperty.getValue();
+                Object value = dataProperty.getValue();
                 validatedData.put(key, getConvertedObject(properties.get(key), value));
             }
         }
@@ -53,29 +83,39 @@ public class Validator {
     }
 
     private JsonSchema getJsonSchema(Class type) throws JsonMappingException {
-        ObjectMapper objectMapper = new ObjectMapper();
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
         objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
         return visitor.finalSchema();
     }
-    
+
     private JsonSchema getJsonSchema(String jsonSchemaAsString) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         JsonSchema schema = objectMapper.readValue(jsonSchemaAsString, JsonSchema.class);
         return schema;
     }
 
-    private Object getConvertedObject(JsonSchema jsonSchema, String value) {
+    private Object getConvertedObject(JsonSchema jsonSchema, Object value) {
         Object convertedValue = value;
         switch (jsonSchema.getType()) {
             case INTEGER:
-                convertedValue = Long.parseLong(value);
+                if (value instanceof Long) {
+                    convertedValue = value;
+                } else {
+                    convertedValue = Long.parseLong(value.toString());
+                }
                 break;
             case NUMBER:
-                convertedValue = Double.parseDouble(value);
+                if (value instanceof Double) {
+                    convertedValue = value;
+                } else {
+                    convertedValue = Double.parseDouble(value.toString());
+                }
                 break;
             case BOOLEAN:
-                convertedValue = Boolean.parseBoolean(value);
+                if (value instanceof Boolean) {
+                    convertedValue = value;
+                } else {
+                    convertedValue = Boolean.parseBoolean(value.toString());
+                }
                 break;
         }
         return convertedValue;

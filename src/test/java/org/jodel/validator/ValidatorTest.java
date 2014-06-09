@@ -44,7 +44,7 @@ public class ValidatorTest {
     @Test
     public void testGetObjectFromPOJO() throws IOException {
         System.out.println("\nPOJO Based");
-        Map<String, String> stringDataObject = jSONUtil.getJsonStringObject("sample");
+        Map<String, Object> stringDataObject = jSONUtil.getJsonStringObject("sample");
         ValidatedObject validatedObject = validator.getObject(SampleBean.class, stringDataObject);
         System.out.println("stringDataObject " + jSONUtil.getAsJsonString(stringDataObject));
         System.out.println("validatedObject " + jSONUtil.getAsJsonString(validatedObject.getDataObject()));
@@ -53,7 +53,7 @@ public class ValidatorTest {
     @Test
     public void testGetObjectFromString() throws IOException {
         System.out.println("\nString Based");
-        Map<String, String> stringDataObject = jSONUtil.getJsonStringObject("sample");
+        Map<String, Object> stringDataObject = jSONUtil.getJsonStringObject("sample");
         ValidatedObject validatedObject = validator.getObject(jSONUtil.getJsonSchemaAsString("sample"), stringDataObject);
         System.out.println("stringDataObject " + jSONUtil.getAsJsonString(stringDataObject));
         System.out.println("validatedObject " + jSONUtil.getAsJsonString(validatedObject.getDataObject()));
