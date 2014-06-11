@@ -11,8 +11,10 @@ import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import org.jodel.store.stereotype.Id;
 
 /**
  *
@@ -25,22 +27,22 @@ public class Validator {
     public Validator() {
         objectMapper = new ObjectMapper();
     }
-    
+
     public String getIDField(JsonSchema jsonSchema) {
-        String idField = null ;
+        String idField = null;
         if (jsonSchema.getType().equals(OBJECT)) {
             Map<String, JsonSchema> properties = jsonSchema.asObjectSchema().getProperties();
-            Map<String,Object> propSchema ;
-            Object idValue ;
+            Map<String, Object> propSchema;
+            Object idValue;
             for (Map.Entry<String, JsonSchema> property : properties.entrySet()) {
-                propSchema = objectMapper.convertValue(property.getValue(), Map.class);  
-                idValue = propSchema.get("id") ;
-                if(idValue != null) {
-                    System.out.println( property.getKey() + " Id value is " + idValue);
+                propSchema = objectMapper.convertValue(property.getValue(), Map.class);
+                idValue = propSchema.get("id");
+                if (idValue != null) {
+                    System.out.println(property.getKey() + " Id value is " + idValue);
                 }
             }
         }
-        return idField;        
+        return idField;
     }
 
     public ValidatedObject getObject(Object dataObj) throws JsonMappingException {
@@ -85,7 +87,20 @@ public class Validator {
     private JsonSchema getJsonSchema(Class type) throws JsonMappingException {
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
         objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
-        return visitor.finalSchema();
+        JsonSchema jsonSchema = visitor.finalSchema();
+        addIdFields(type, jsonSchema);
+        return jsonSchema;
+    }
+
+    private void addIdFields(Class type, JsonSchema jsonSchema) {
+        if (jsonSchema.getType().equals(OBJECT)) {
+            Map<String, JsonSchema> properties = jsonSchema.asObjectSchema().getProperties();
+            for (Field field : type.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Id.class)) {
+                    properties.get(field.getName()).setId("true");
+                }
+            }
+        }
     }
 
     private JsonSchema getJsonSchema(String jsonSchemaAsString) throws IOException {
