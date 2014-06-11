@@ -27,22 +27,9 @@ public class Validator {
     public Validator() {
         objectMapper = new ObjectMapper();
     }
-
-    public String getIDField(JsonSchema jsonSchema) {
-        String idField = null;
-        if (jsonSchema.getType().equals(OBJECT)) {
-            Map<String, JsonSchema> properties = jsonSchema.asObjectSchema().getProperties();
-            Map<String, Object> propSchema;
-            Object idValue;
-            for (Map.Entry<String, JsonSchema> property : properties.entrySet()) {
-                propSchema = objectMapper.convertValue(property.getValue(), Map.class);
-                idValue = propSchema.get("id");
-                if (idValue != null) {
-                    System.out.println(property.getKey() + " Id value is " + idValue);
-                }
-            }
-        }
-        return idField;
+    
+    public <T> T getObjectOfType(Class<T> type,Map<String, Object> dataMap) {
+        return objectMapper.convertValue(dataMap, type);        
     }
 
     public ValidatedObject getObject(Object dataObj) throws JsonMappingException {
@@ -84,10 +71,11 @@ public class Validator {
         return validatedData;
     }
 
-    private JsonSchema getJsonSchema(Class type) throws JsonMappingException {
+    public JsonSchema getJsonSchema(Class type) throws JsonMappingException {
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
         objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
         JsonSchema jsonSchema = visitor.finalSchema();
+        jsonSchema.setId(type.getName());
         addIdFields(type, jsonSchema);
         return jsonSchema;
     }

@@ -48,12 +48,18 @@ public class DataStoreTest {
         SampleBean sampleBean = new SampleBean();
         sampleBean.setAge(32);
         sampleBean.setIsMale(true);
-        sampleBean.setLongSalary(Long.MAX_VALUE);
-        sampleBean.setName("Sathish");
+        sampleBean.setLongSalary(Long.MAX_VALUE);        
         sampleBean.setSalary(Double.NaN);
         
         SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
+        System.out.println("bean name " + bean.getName());
         
+    }
+    
+    @Test
+    public void testReadObject() throws JsonMappingException {
+        SampleBean bean = dataStore.read(SampleBean.class, "539848601c5a91561437e55c");
+        System.out.println("SampleBean  " + bean.getLongSalary());        
     }
 
     

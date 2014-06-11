@@ -16,13 +16,13 @@ import org.jodel.validator.Validator;
  * @author sathish_ku
  */
 public abstract class DataStore {
-    
-    protected final Validator validator ;
-    
+
+    protected final Validator validator;
+
     public DataStore() {
         validator = new Validator();
     }
-    
+
     /**
      * Creates a new object
      *
@@ -32,10 +32,9 @@ public abstract class DataStore {
      * @return created object
      * @throws com.fasterxml.jackson.databind.JsonMappingException
      */
-    public <T> T create(Class<T> clazz,Object object) throws JsonMappingException {
+    public <T> T create(Class<T> clazz, Object object) throws JsonMappingException {
         ValidatedObject validatedObject = validator.getObject(object);
-        Map<String,Object> map = create(validatedObject.getDataObject(),validatedObject.getJsonSchema());
-        return null;        
+        return validator.getObjectOfType(clazz, create(validatedObject.getDataObject(), validatedObject.getJsonSchema()));
     }
 
     /**
@@ -45,24 +44,48 @@ public abstract class DataStore {
      * @param clazz Class of the Object to be read
      * @param name name of the Object
      * @return object with given name
+     * @throws com.fasterxml.jackson.databind.JsonMappingException
      */
-    public <T> T read(Class<T> clazz,String name ) {
-        return null;        
+    public <T> T read(Class<T> clazz, String name) throws JsonMappingException {
+        return validator.getObjectOfType(clazz,read(validator.getJsonSchema(clazz), name));
     }
-    
-    
+
+    protected String getIdField(JsonSchema jsonSchema) {
+        String idField = null;
+        String idValue;
+
+        Map<String, JsonSchema> properties = jsonSchema.asObjectSchema().getProperties();
+        for (Map.Entry<String, JsonSchema> property : properties.entrySet()) {
+            idValue = property.getValue().getId();
+            if (idValue != null && idValue.trim().equals("true")) {
+                idField = property.getKey();
+                break;
+            }
+        }
+        return idField;
+    }
+
     /**
      * ALL ABSTRACT METHODS WILL COME HERE
      */
-    
     /**
-     * 
+     *
      * @param validatedDataObject
      * @param jsonSchema
-     * @return 
+     * @return
      */
-    public abstract Map<String,Object> create(
-            Map<String,Object> validatedDataObject, 
+    public abstract Map<String, Object> create(
+            Map<String, Object> validatedDataObject,
             JsonSchema jsonSchema);
-    
+
+    /**
+     *
+     * @param jsonSchema
+     * @param idValue
+     * @return
+     */
+    public abstract Map<String, Object> read(
+            JsonSchema jsonSchema,
+            String idValue);
+
 }
