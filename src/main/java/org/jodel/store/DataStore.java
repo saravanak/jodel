@@ -49,6 +49,27 @@ public abstract class DataStore {
     public <T> T read(Class<T> clazz, String name) throws JsonMappingException {
         return validator.getObjectOfType(clazz,read(validator.getJsonSchema(clazz), name));
     }
+    
+    /**
+     * TODO: 
+     * @param dataObject
+     * @return
+     * @throws JsonMappingException 
+     */
+    public boolean update(Object dataObject) throws JsonMappingException {
+        return false;        
+    }
+    
+    /**
+     * TODO: 
+     * @param clazz
+     * @param name
+     * @return
+     * @throws JsonMappingException 
+     */
+    public boolean delete(Class clazz, String name) throws JsonMappingException {
+        return false;        
+    }
 
     protected String getIdField(JsonSchema jsonSchema) {
         String idField = null;
