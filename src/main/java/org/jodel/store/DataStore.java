@@ -7,9 +7,8 @@ package org.jodel.store;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-
+import java.util.List;
 import java.util.Map;
-
 import org.jodel.validator.ValidatedObject;
 import org.jodel.validator.Validator;
 
@@ -32,9 +31,8 @@ public abstract class DataStore {
      * @param clazz Class of the Object to be created
      * @param object Object to be created
      * @return created object
-     * @throws com.fasterxml.jackson.databind.JsonMappingException
      */
-    public <T> T create(Class<T> clazz, Object object) throws JsonMappingException {
+    public <T> T create(Class<T> clazz, Object object) {
         ValidatedObject validatedObject = validator.getObject(object);
         return validator.getObjectOfType(clazz, create(validatedObject.getJsonSchema(), validatedObject.getDataObject()));
     }
@@ -46,15 +44,36 @@ public abstract class DataStore {
      * @param clazz Class of the Object to be read
      * @param name name of the Object
      * @return object with given name
-     * @throws com.fasterxml.jackson.databind.JsonMappingException
      */
-    public <T> T read(Class<T> clazz, String name) throws JsonMappingException {
+    public <T> T read(Class<T> clazz, String name) {
         return validator.getObjectOfType(clazz, read(validator.getJsonSchema(clazz), name));
     }
 
     /**
-     * TODO:
+     * reads an Object with given name
      *
+     * @param <T> Type of the Object
+     * @param clazz Class of the Object to be read
+     * @return object with given name
+     */
+    public <T> List<T> list(Class<T> clazz) {
+        return null;
+    }
+
+    /**
+     * reads an Object with given name
+     *
+     * @param <T> Type of the Object
+     * @param clazz Class of the Object to be read
+     * @param pageNumber
+     * @param pageSize
+     * @return object with given name
+     */
+    public <T> List<T> list(Class<T> clazz,int pageNumber,int pageSize) {
+        return null;
+    }
+
+    /**
      * @param dataObject
      * @return
      * @throws JsonMappingException

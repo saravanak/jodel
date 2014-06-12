@@ -34,7 +34,7 @@ public class Validator {
         return objectMapper.convertValue(dataMap, type);
     }
 
-    public ValidatedObject getObject(Object dataObj) throws JsonMappingException {
+    public ValidatedObject getObject(Object dataObj)  {
         ValidatedObject validatedObject = null;
         if (dataObj != null) {
             validatedObject = getObject(dataObj.getClass(), objectMapper.convertValue(dataObj, Map.class));
@@ -42,7 +42,7 @@ public class Validator {
         return validatedObject;
     }
 
-    public ValidatedObject getObject(Class type, Map<String, Object> jsonData) throws JsonMappingException {
+    public ValidatedObject getObject(Class type, Map<String, Object> jsonData)  {
         JsonSchema jsonSchema = getJsonSchema(type);
         return new ValidatedObject(jsonSchema, getObject(jsonSchema, jsonData));
     }
