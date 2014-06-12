@@ -5,16 +5,19 @@
  */
 package org.jodel.store.mongo;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bson.types.ObjectId;
 import org.jodel.store.DataStore;
 
@@ -68,5 +71,25 @@ public class MongoDataStore extends DataStore {
         dataMap.put(idField, idFieldValue.toString());
         return dataMap;
     }
+
+	@Override
+	public boolean delete(Class clazz, String idValue) throws JsonMappingException {
+		DBObject query =  new BasicDBObject(ID_FIELD, new ObjectId(idValue));
+		db.getCollection(validator.getJsonSchema(clazz).getId()).remove(query);
+		return true;
+	}
+
+	@Override
+	public boolean update(JsonSchema jsonSchema, Map<String, Object> validatedDataObject) {
+		String idField = getIdField(jsonSchema);
+        Object idFieldValue = validatedDataObject.get(idField);
+        validatedDataObject.remove(idField);
+        DBObject query =  new BasicDBObject(ID_FIELD, new ObjectId(idFieldValue.toString()));
+        DBObject dBObject =  new BasicDBObject(validatedDataObject);
+        db.getCollection(jsonSchema.getId()).findAndModify(query, (dBObject));
+        return true; 
+	}
+
+	
 
 }

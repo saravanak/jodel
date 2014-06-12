@@ -7,7 +7,9 @@ package org.jodel.store;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+
 import java.util.Map;
+
 import org.jodel.validator.ValidatedObject;
 import org.jodel.validator.Validator;
 
@@ -57,19 +59,20 @@ public abstract class DataStore {
      * @throws JsonMappingException 
      */
     public boolean update(Object dataObject) throws JsonMappingException {
-        return false;        
+    	ValidatedObject validatedObject = validator.getObject(dataObject);
+        return update(validatedObject.getJsonSchema(), validatedObject.getDataObject());        
     }
     
-    /**
+    public abstract  boolean update(JsonSchema jsonSchema, Map<String, Object> dataObject);
+
+	/**
      * TODO: 
      * @param clazz
      * @param name
      * @return
      * @throws JsonMappingException 
      */
-    public boolean delete(Class clazz, String name) throws JsonMappingException {
-        return false;        
-    }
+    public abstract boolean delete(Class clazz, String name) throws JsonMappingException;
 
     protected String getIdField(JsonSchema jsonSchema) {
         String idField = null;
