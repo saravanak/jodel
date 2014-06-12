@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jodel.store.stereotype.Id;
 
 /**
@@ -27,9 +29,9 @@ public class Validator {
     public Validator() {
         objectMapper = new ObjectMapper();
     }
-    
-    public <T> T getObjectOfType(Class<T> type,Map<String, Object> dataMap) {
-        return objectMapper.convertValue(dataMap, type);        
+
+    public <T> T getObjectOfType(Class<T> type, Map<String, Object> dataMap) {
+        return objectMapper.convertValue(dataMap, type);
     }
 
     public ValidatedObject getObject(Object dataObj) throws JsonMappingException {
@@ -71,12 +73,18 @@ public class Validator {
         return validatedData;
     }
 
-    public JsonSchema getJsonSchema(Class type) throws JsonMappingException {
+    public JsonSchema getJsonSchema(Class type) {
+        JsonSchema jsonSchema = null;
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
-        objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
-        JsonSchema jsonSchema = visitor.finalSchema();
-        jsonSchema.setId(type.getName());
-        addIdFields(type, jsonSchema);
+        try {
+            objectMapper.acceptJsonFormatVisitor(objectMapper.constructType(type), visitor);
+            jsonSchema = visitor.finalSchema();
+            jsonSchema.setId(type.getName());
+            addIdFields(type, jsonSchema);
+        } catch (JsonMappingException ex) {
+            Logger.getLogger(Validator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return jsonSchema;
     }
 

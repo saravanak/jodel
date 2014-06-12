@@ -26,7 +26,7 @@ import org.jodel.store.DataStore;
  * @author sathish_ku
  */
 public class MongoDataStore extends DataStore {
-    
+
     private static final String ID_FIELD = "_id";
 
     private DB db;
@@ -48,22 +48,21 @@ public class MongoDataStore extends DataStore {
     }
 
     @Override
-    public Map<String, Object> create(Map<String, Object> validatedDataObject, JsonSchema jsonSchema) {
+    public Map<String, Object> create(JsonSchema jsonSchema, Map<String, Object> dataObject) {
         String idField = getIdField(jsonSchema);
-        Object idFieldValue = validatedDataObject.get(idField);
-        validatedDataObject.remove(idField);
-        validatedDataObject.put(ID_FIELD, idFieldValue);
-        DBObject dBObject =  new BasicDBObject(validatedDataObject);
+        Object idFieldValue = dataObject.get(idField);
+        dataObject.remove(idField);
+        dataObject.put(ID_FIELD, idFieldValue);
+        DBObject dBObject = new BasicDBObject(dataObject);
         db.getCollection(jsonSchema.getId()).insert(dBObject);
-        validatedDataObject.remove(ID_FIELD);
-        validatedDataObject.put(idField, dBObject.get(ID_FIELD).toString());
-        return validatedDataObject;        
+        dataObject.remove(ID_FIELD);
+        dataObject.put(idField, dBObject.get(ID_FIELD).toString());
+        return dataObject;
     }
-
 
     @Override
     public Map<String, Object> read(JsonSchema jsonSchema, String idValue) {
-        DBObject query =  new BasicDBObject(ID_FIELD, new ObjectId(idValue));
+        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));
         Map<String, Object> dataMap = db.getCollection(jsonSchema.getId()).findOne(query).toMap();
         String idField = getIdField(jsonSchema);
         Object idFieldValue = dataMap.get(ID_FIELD);
@@ -72,24 +71,22 @@ public class MongoDataStore extends DataStore {
         return dataMap;
     }
 
-	@Override
-	public boolean delete(Class clazz, String idValue) throws JsonMappingException {
-		DBObject query =  new BasicDBObject(ID_FIELD, new ObjectId(idValue));
-		db.getCollection(validator.getJsonSchema(clazz).getId()).remove(query);
-		return true;
-	}
+    @Override
+    public boolean delete(JsonSchema jsonSchema, String idValue) {
+        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));
+        db.getCollection(jsonSchema.getId()).remove(query);
+        return true;
+    }
 
-	@Override
-	public boolean update(JsonSchema jsonSchema, Map<String, Object> validatedDataObject) {
-		String idField = getIdField(jsonSchema);
+    @Override
+    public boolean update(JsonSchema jsonSchema, Map<String, Object> validatedDataObject) {
+        String idField = getIdField(jsonSchema);
         Object idFieldValue = validatedDataObject.get(idField);
         validatedDataObject.remove(idField);
-        DBObject query =  new BasicDBObject(ID_FIELD, new ObjectId(idFieldValue.toString()));
-        DBObject dBObject =  new BasicDBObject(validatedDataObject);
+        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idFieldValue.toString()));
+        DBObject dBObject = new BasicDBObject(validatedDataObject);
         db.getCollection(jsonSchema.getId()).findAndModify(query, (dBObject));
-        return true; 
-	}
-
-	
+        return true;
+    }
 
 }

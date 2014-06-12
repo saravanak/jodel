@@ -36,7 +36,7 @@ public abstract class DataStore {
      */
     public <T> T create(Class<T> clazz, Object object) throws JsonMappingException {
         ValidatedObject validatedObject = validator.getObject(object);
-        return validator.getObjectOfType(clazz, create(validatedObject.getDataObject(), validatedObject.getJsonSchema()));
+        return validator.getObjectOfType(clazz, create(validatedObject.getJsonSchema(), validatedObject.getDataObject()));
     }
 
     /**
@@ -49,30 +49,24 @@ public abstract class DataStore {
      * @throws com.fasterxml.jackson.databind.JsonMappingException
      */
     public <T> T read(Class<T> clazz, String name) throws JsonMappingException {
-        return validator.getObjectOfType(clazz,read(validator.getJsonSchema(clazz), name));
+        return validator.getObjectOfType(clazz, read(validator.getJsonSchema(clazz), name));
     }
-    
+
     /**
-     * TODO: 
+     * TODO:
+     *
      * @param dataObject
      * @return
-     * @throws JsonMappingException 
+     * @throws JsonMappingException
      */
     public boolean update(Object dataObject) throws JsonMappingException {
-    	ValidatedObject validatedObject = validator.getObject(dataObject);
-        return update(validatedObject.getJsonSchema(), validatedObject.getDataObject());        
+        ValidatedObject validatedObject = validator.getObject(dataObject);
+        return update(validatedObject.getJsonSchema(), validatedObject.getDataObject());
     }
-    
-    public abstract  boolean update(JsonSchema jsonSchema, Map<String, Object> dataObject);
 
-	/**
-     * TODO: 
-     * @param clazz
-     * @param name
-     * @return
-     * @throws JsonMappingException 
-     */
-    public abstract boolean delete(Class clazz, String name) throws JsonMappingException;
+    public boolean delete(Class clazz, String name) {
+        return delete(validator.getJsonSchema(clazz), name);
+    }
 
     protected String getIdField(JsonSchema jsonSchema) {
         String idField = null;
@@ -99,8 +93,8 @@ public abstract class DataStore {
      * @return
      */
     public abstract Map<String, Object> create(
-            Map<String, Object> validatedDataObject,
-            JsonSchema jsonSchema);
+            JsonSchema jsonSchema,
+            Map<String, Object> validatedDataObject);
 
     /**
      *
@@ -111,5 +105,23 @@ public abstract class DataStore {
     public abstract Map<String, Object> read(
             JsonSchema jsonSchema,
             String idValue);
+
+    /**
+     *
+     * @param jsonSchema
+     * @param idValue
+     * @return
+     */
+    public abstract boolean delete(JsonSchema jsonSchema,
+            String idValue);
+
+    /**
+     *
+     * @param jsonSchema
+     * @param validatedDataObject
+     * @return
+     */
+    public abstract boolean update(JsonSchema jsonSchema,
+            Map<String, Object> validatedDataObject);
 
 }
