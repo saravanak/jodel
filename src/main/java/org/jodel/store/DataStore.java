@@ -78,7 +78,7 @@ public abstract class DataStore {
      * @return
      * @throws JsonMappingException
      */
-    public boolean update(Object dataObject) throws JsonMappingException {
+    public boolean update(Object dataObject) {
         ValidatedObject validatedObject = validator.getObject(dataObject);
         return update(validatedObject.getJsonSchema(), validatedObject.getDataObject());
     }
