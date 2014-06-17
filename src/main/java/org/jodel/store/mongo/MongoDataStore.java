@@ -5,7 +5,6 @@
  */
 package org.jodel.store.mongo;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -14,7 +13,6 @@ import com.mongodb.MongoClient;
 
 import java.net.UnknownHostException;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,19 +38,15 @@ public class MongoDataStore extends DataStore {
         }
     }
 
-    private void getCollectionNames() {
-        Set<String> colls = db.getCollectionNames();
-        for (String s : colls) {
-            System.out.println(s);
-        }
-    }
+
 
     @Override
     public Map<String, Object> create(JsonSchema jsonSchema, Map<String, Object> dataObject) {
         String idField = getIdField(jsonSchema);
-        Object idFieldValue = dataObject.get(idField);
-        dataObject.remove(idField);
-        dataObject.put(ID_FIELD, idFieldValue);
+        Object idFieldValue = dataObject.remove(idField);
+        if(idFieldValue != null) {
+            dataObject.put(ID_FIELD, new ObjectId(idFieldValue.toString()));
+        }        
         DBObject dBObject = new BasicDBObject(dataObject);
         db.getCollection(jsonSchema.getId()).insert(dBObject);
         dataObject.remove(ID_FIELD);
