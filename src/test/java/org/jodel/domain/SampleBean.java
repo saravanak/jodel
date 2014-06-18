@@ -7,7 +7,7 @@
 package org.jodel.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jodel.store.stereotype.Id;
+import javax.persistence.Id;
 
 /**
  *
