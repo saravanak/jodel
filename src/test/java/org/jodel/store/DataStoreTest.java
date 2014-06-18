@@ -7,7 +7,7 @@
 package org.jodel.store;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-
+import java.util.List;
 import org.jodel.domain.SampleBean;
 import org.jodel.store.mongo.MongoDataStore;
 import org.junit.After;
@@ -100,6 +100,20 @@ public class DataStoreTest {
         
         bean.setIsMale(false);
         dataStore.update(bean);
+    }
+    
+    @Test
+    public void testListObject() throws JsonMappingException {
+    	
+        SampleBean sampleBean = new SampleBean();
+        sampleBean.setAge(32);
+        sampleBean.setIsMale(true);
+        sampleBean.setLongSalary(Long.MAX_VALUE);        
+        sampleBean.setSalary(Double.NaN);
+        
+        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
+        List<SampleBean> beans = dataStore.list(SampleBean.class);
+        System.out.println("SampleBeans  " + beans.size());        
     }
 
     

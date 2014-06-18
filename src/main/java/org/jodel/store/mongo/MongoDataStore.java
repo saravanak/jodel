@@ -12,6 +12,8 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,14 +57,9 @@ public class MongoDataStore extends DataStore {
     }
 
     @Override
-    public Map<String, Object> read(JsonSchema jsonSchema, String idValue) {
-        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));
-        Map<String, Object> dataMap = db.getCollection(jsonSchema.getId()).findOne(query).toMap();
-        String idField = getIdField(jsonSchema);
-        Object idFieldValue = dataMap.get(ID_FIELD);
-        dataMap.remove(ID_FIELD);
-        dataMap.put(idField, idFieldValue.toString());
-        return dataMap;
+    public Map<String, Object> read(JsonSchema jsonSchema, String idValue) {        
+        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));          
+        return getDataMap(db.getCollection(jsonSchema.getId()).findOne(query),getIdField(jsonSchema));
     }
 
     @Override
@@ -81,6 +78,26 @@ public class MongoDataStore extends DataStore {
         DBObject dBObject = new BasicDBObject(validatedDataObject);
         db.getCollection(jsonSchema.getId()).findAndModify(query, (dBObject));
         return true;
+    }
+
+    @Override
+    public List<Map<String, Object>> list(JsonSchema jsonSchema) {
+        String idField = getIdField(jsonSchema);
+        List<DBObject> dBObjects = db.getCollection(jsonSchema.getId()).find().toArray();
+        if(dBObjects != null) {            
+            List<Map<String, Object>> listOfMap = new ArrayList<>(dBObjects.size());
+            for (DBObject dBObject : dBObjects) {
+                listOfMap.add(getDataMap(dBObject,idField));
+            }
+            return listOfMap;
+        }
+        return null;
+    }
+    
+    private Map<String, Object> getDataMap(DBObject dBObject,String idFieldName) {
+        Map<String, Object> dataMap = dBObject.toMap();
+        dataMap.put(idFieldName, dataMap.remove(ID_FIELD).toString());
+        return dataMap;
     }
 
 }

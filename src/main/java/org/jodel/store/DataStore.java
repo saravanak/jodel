@@ -7,6 +7,7 @@ package org.jodel.store;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.jodel.validator.ValidatedObject;
@@ -57,6 +58,14 @@ public abstract class DataStore {
      * @return object with given name
      */
     public <T> List<T> list(Class<T> clazz) {
+        List<Map<String, Object>> listOfMap = list(validator.getJsonSchema(clazz));
+        if (listOfMap != null) {
+            List<T> listOfObject = new ArrayList<>(listOfMap.size());
+            for (Map<String, Object> map : listOfMap) {
+                listOfObject.add(validator.getObjectOfType(clazz,map));
+            }
+            return listOfObject;
+        }
         return null;
     }
 
@@ -69,7 +78,7 @@ public abstract class DataStore {
      * @param pageSize
      * @return object with given name
      */
-    public <T> List<T> list(Class<T> clazz,int pageNumber,int pageSize) {
+    public <T> List<T> list(Class<T> clazz, int pageNumber, int pageSize) {
         return null;
     }
 
@@ -142,5 +151,12 @@ public abstract class DataStore {
      */
     public abstract boolean update(JsonSchema jsonSchema,
             Map<String, Object> validatedDataObject);
+
+    /**
+     *
+     * @param jsonSchema
+     * @return
+     */
+    public abstract List<Map<String, Object>> list(JsonSchema jsonSchema);
 
 }
