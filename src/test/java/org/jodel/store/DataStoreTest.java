@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import java.util.List;
 import org.jodel.domain.SampleBean;
 import org.jodel.store.mongo.MongoDataStore;
+import org.jodel.store.query.Filter;
+import org.jodel.store.query.Query;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -47,12 +49,12 @@ public class DataStoreTest {
     
     @Test
     public void testCreateObject() throws JsonMappingException {
-        SampleBean sampleBean = new SampleBean();
+        SampleBean sampleBean = new SampleBean();    
+        sampleBean.setName("Saravana Kumar");
         sampleBean.setAge(32);
         sampleBean.setIsMale(true);
         sampleBean.setLongSalary(Long.MAX_VALUE);        
-        sampleBean.setSalary(Double.NaN);
-        
+        sampleBean.setSalary(Double.NaN);        
         SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
         System.out.println("bean name " + bean.getName());
         
@@ -103,7 +105,7 @@ public class DataStoreTest {
     }
     
     @Test
-    public void testListObject() throws JsonMappingException {
+    public void testListObjects() throws JsonMappingException {
     	
         SampleBean sampleBean = new SampleBean();
         sampleBean.setAge(32);
@@ -115,6 +117,27 @@ public class DataStoreTest {
         List<SampleBean> beans = dataStore.list(SampleBean.class);
         System.out.println("SampleBeans  " + beans.size());        
     }
+    
+    @Test
+    public void testListObjectWithQuery() throws JsonMappingException {
+    	
+        Query query = new Query();
+        query.addFilter(new Filter<>("age", Filter.Operator.EQUALS, 32));
+        
+        List<SampleBean> beans = dataStore.list(SampleBean.class,query);
+        
+        System.out.println("Total Count is " + beans.size());
+        
+        for (SampleBean sampleBean1 : beans) {
+            System.out.println(sampleBean1.getAge());
+            System.out.println(sampleBean1.getLongSalary());
+            System.out.println(sampleBean1.getName());
+            System.out.println(sampleBean1.getSalary());
+            System.out.println("--------------------------------------------------------------------");
+        }
+       
+    }
+    
 
     
     

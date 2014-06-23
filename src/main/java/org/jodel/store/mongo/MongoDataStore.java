@@ -20,6 +20,10 @@ import java.util.logging.Logger;
 
 import org.bson.types.ObjectId;
 import org.jodel.store.DataStore;
+import org.jodel.store.query.Filter;
+import org.jodel.store.query.Query;
+
+import static org.jodel.store.query.Filter.Operator.*;
 
 /**
  *
@@ -40,15 +44,13 @@ public class MongoDataStore extends DataStore {
         }
     }
 
-
-
     @Override
     public Map<String, Object> create(JsonSchema jsonSchema, Map<String, Object> dataObject) {
         String idField = getIdField(jsonSchema);
         Object idFieldValue = dataObject.remove(idField);
-        if(idFieldValue != null) {
-            dataObject.put(ID_FIELD, new ObjectId(idFieldValue.toString()));
-        }        
+        if (idFieldValue != null) {
+            dataObject.put(ID_FIELD, idFieldValue.toString());
+        }
         DBObject dBObject = new BasicDBObject(dataObject);
         db.getCollection(jsonSchema.getId()).insert(dBObject);
         dataObject.remove(ID_FIELD);
@@ -57,9 +59,9 @@ public class MongoDataStore extends DataStore {
     }
 
     @Override
-    public Map<String, Object> read(JsonSchema jsonSchema, String idValue) {        
-        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));          
-        return getDataMap(db.getCollection(jsonSchema.getId()).findOne(query),getIdField(jsonSchema));
+    public Map<String, Object> read(JsonSchema jsonSchema, String idValue) {
+        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));
+        return getDataMap(db.getCollection(jsonSchema.getId()).findOne(query), getIdField(jsonSchema));
     }
 
     @Override
@@ -84,20 +86,50 @@ public class MongoDataStore extends DataStore {
     public List<Map<String, Object>> list(JsonSchema jsonSchema) {
         String idField = getIdField(jsonSchema);
         List<DBObject> dBObjects = db.getCollection(jsonSchema.getId()).find().toArray();
-        if(dBObjects != null) {            
+        if (dBObjects != null) {
             List<Map<String, Object>> listOfMap = new ArrayList<>(dBObjects.size());
             for (DBObject dBObject : dBObjects) {
-                listOfMap.add(getDataMap(dBObject,idField));
+                listOfMap.add(getDataMap(dBObject, idField));
             }
             return listOfMap;
         }
         return null;
     }
-    
-    private Map<String, Object> getDataMap(DBObject dBObject,String idFieldName) {
+
+    @Override
+    public List<Map<String, Object>> list(JsonSchema jsonSchema, Query query) {
+        String idField = getIdField(jsonSchema);
+        List<DBObject> dBObjects = db.getCollection(jsonSchema.getId()).find(getQueryObject(query)).toArray();
+        if (dBObjects != null) {
+            List<Map<String, Object>> listOfMap = new ArrayList<>(dBObjects.size());
+            for (DBObject dBObject : dBObjects) {
+                listOfMap.add(getDataMap(dBObject, idField));
+            }
+            return listOfMap;
+        }
+        return null;
+    }
+
+    private Map<String, Object> getDataMap(DBObject dBObject, String idFieldName) {
         Map<String, Object> dataMap = dBObject.toMap();
         dataMap.put(idFieldName, dataMap.remove(ID_FIELD).toString());
         return dataMap;
+    }
+
+    private DBObject getQueryObject(Query query) {
+        BasicDBObject queryObject = new BasicDBObject();
+
+        List<Filter> filters = query.getFilters();
+        for (Filter filter : filters) {
+            switch (filter.getOperator()) {
+                case EQUALS:
+                    queryObject.append(filter.getName(), filter.getValue());
+                    break;
+            }
+
+        }
+
+        return queryObject;
     }
 
 }

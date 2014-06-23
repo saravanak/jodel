@@ -10,6 +10,7 @@ import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.jodel.store.query.Query;
 import org.jodel.validator.ValidatedObject;
 import org.jodel.validator.Validator;
 
@@ -68,6 +69,26 @@ public abstract class DataStore {
         }
         return null;
     }
+    
+    /**
+     * reads an Object with given name
+     *
+     * @param <T> Type of the Object
+     * @param clazz Class of the Object to be read
+     * @param query
+     * @return object with given name
+     */
+    public <T> List<T> list(Class<T> clazz,Query query) {
+        List<Map<String, Object>> listOfMap = list(validator.getJsonSchema(clazz),query);
+        if (listOfMap != null) {
+            List<T> listOfObject = new ArrayList<>(listOfMap.size());
+            for (Map<String, Object> map : listOfMap) {
+                listOfObject.add(validator.getObjectOfType(clazz,map));
+            }
+            return listOfObject;
+        }
+        return null;
+    }
 
     /**
      * reads an Object with given name
@@ -85,7 +106,6 @@ public abstract class DataStore {
     /**
      * @param dataObject
      * @return
-     * @throws JsonMappingException
      */
     public boolean update(Object dataObject) {
         ValidatedObject validatedObject = validator.getObject(dataObject);
@@ -158,5 +178,13 @@ public abstract class DataStore {
      * @return
      */
     public abstract List<Map<String, Object>> list(JsonSchema jsonSchema);
+    
+    /**
+     *
+     * @param jsonSchema
+     * @param query
+     * @return
+     */
+    public abstract List<Map<String, Object>> list(JsonSchema jsonSchema,Query query);
 
 }
