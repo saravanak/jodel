@@ -8,14 +8,16 @@ package org.jodel.store.query;
 /**
  *
  * @author sathish_ku
+ * @param <T>
  */
 public class Filter<T> {
 
     public enum Operator {
-
         EQUALS,
         GREATER,
-        LESSER
+        LESSER,
+        IS_NULL,
+        IS_NOTNULL
     }
 
     private final String name;
