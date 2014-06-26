@@ -47,76 +47,76 @@ public class DataStoreTest {
     public void tearDown() {
     }
     
-    @Test
-    public void testCreateObject() throws JsonMappingException {
-        SampleBean sampleBean = new SampleBean();    
-        sampleBean.setName("Saravana Kumar");
-        sampleBean.setAge(32);
-        sampleBean.setIsMale(true);
-        sampleBean.setLongSalary(Long.MAX_VALUE);        
-        sampleBean.setSalary(Double.NaN);        
-        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
-        System.out.println("bean name " + bean.getName());
-        
-    }
-    
-    @Test
-    public void testReadObject() throws JsonMappingException {
-    	
-        SampleBean sampleBean = new SampleBean();
-        sampleBean.setAge(32);
-        sampleBean.setIsMale(true);
-        sampleBean.setLongSalary(Long.MAX_VALUE);        
-        sampleBean.setSalary(Double.NaN);
-        
-        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
-        bean = dataStore.read(SampleBean.class, bean.getName());
-        System.out.println("SampleBean  " + bean.getLongSalary());        
-    }
-    
-    @Test
-    public void testDeleteObject() throws JsonMappingException {
-    	
-        SampleBean sampleBean = new SampleBean();
-        sampleBean.setAge(32);
-        sampleBean.setIsMale(true);
-        sampleBean.setLongSalary(Long.MAX_VALUE);        
-        sampleBean.setSalary(Double.NaN);
-        
-        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
-        Assert.assertTrue(dataStore.delete(SampleBean.class, bean.getName()));
-    }
-    
-    @Test
-    public void testUpdateObject() throws JsonMappingException {
-    	
-        SampleBean sampleBean = new SampleBean();
-        sampleBean.setAge(32);
-        sampleBean.setIsMale(true);
-        sampleBean.setLongSalary(Long.MAX_VALUE);        
-        sampleBean.setSalary(Double.NaN);
-        
-        
-        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
-        System.out.println(bean.getName());
-        
-        bean.setIsMale(false);
-        dataStore.update(bean);
-    }
-    
-    @Test
-    public void testListObjects() throws JsonMappingException {
-    	
-        SampleBean sampleBean = new SampleBean();
-        sampleBean.setAge(32);
-        sampleBean.setIsMale(true);
-        sampleBean.setLongSalary(Long.MAX_VALUE);        
-        sampleBean.setSalary(Double.NaN);
-        
-        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
-        List<SampleBean> beans = dataStore.list(SampleBean.class);
-        System.out.println("SampleBeans  " + beans.size());        
-    }
+//    @Test
+//    public void testCreateObject() throws JsonMappingException {
+//        SampleBean sampleBean = new SampleBean();    
+//        sampleBean.setName("Saravana Kumar");
+//        sampleBean.setAge(32);
+//        sampleBean.setIsMale(true);
+//        sampleBean.setLongSalary(Long.MAX_VALUE);        
+//        sampleBean.setSalary(Double.NaN);        
+//        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
+//        System.out.println("bean name " + bean.getName());
+//        
+//    }
+//    
+//    @Test
+//    public void testReadObject() throws JsonMappingException {
+//    	
+//        SampleBean sampleBean = new SampleBean();
+//        sampleBean.setAge(32);
+//        sampleBean.setIsMale(true);
+//        sampleBean.setLongSalary(Long.MAX_VALUE);        
+//        sampleBean.setSalary(Double.NaN);
+//        
+//        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
+//        bean = dataStore.read(SampleBean.class, bean.getName());
+//        System.out.println("SampleBean  " + bean.getLongSalary());        
+//    }
+//    
+//    @Test
+//    public void testDeleteObject() throws JsonMappingException {
+//    	
+//        SampleBean sampleBean = new SampleBean();
+//        sampleBean.setAge(32);
+//        sampleBean.setIsMale(true);
+//        sampleBean.setLongSalary(Long.MAX_VALUE);        
+//        sampleBean.setSalary(Double.NaN);
+//        
+//        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
+//        Assert.assertTrue(dataStore.delete(SampleBean.class, bean.getName()));
+//    }
+//    
+//    @Test
+//    public void testUpdateObject() throws JsonMappingException {
+//    	
+//        SampleBean sampleBean = new SampleBean();
+//        sampleBean.setAge(32);
+//        sampleBean.setIsMale(true);
+//        sampleBean.setLongSalary(Long.MAX_VALUE);        
+//        sampleBean.setSalary(Double.NaN);
+//        
+//        
+//        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
+//        System.out.println(bean.getName());
+//        
+//        bean.setIsMale(false);
+//        dataStore.update(bean);
+//    }
+//    
+//    @Test
+//    public void testListObjects() throws JsonMappingException {
+//    	
+//        SampleBean sampleBean = new SampleBean();
+//        sampleBean.setAge(32);
+//        sampleBean.setIsMale(true);
+//        sampleBean.setLongSalary(Long.MAX_VALUE);        
+//        sampleBean.setSalary(Double.NaN);
+//        
+//        SampleBean bean = dataStore.create(SampleBean.class, sampleBean);
+//        List<SampleBean> beans = dataStore.list(SampleBean.class);
+//        System.out.println("SampleBeans  " + beans.size());        
+//    }
     
     @Test
     public void testListObjectWithQuery() throws JsonMappingException {
