@@ -123,6 +123,10 @@ public class DataStoreTest {
     	
         Query query = new Query();
         query.addFilter(new Filter<>("age", Filter.Operator.EQUALS, 32));
+        query.addFilter(new Filter<>("name", Filter.Operator.EQUALS, "Sathish Kumar"));
+        
+        
+        dataStore.delete(SampleBean.class,query);
         
         List<SampleBean> beans = dataStore.list(SampleBean.class,query);
         

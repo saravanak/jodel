@@ -5,7 +5,6 @@
  */
 package org.jodel.store;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +62,13 @@ public abstract class DataStore {
         if (listOfMap != null) {
             List<T> listOfObject = new ArrayList<>(listOfMap.size());
             for (Map<String, Object> map : listOfMap) {
-                listOfObject.add(validator.getObjectOfType(clazz,map));
+                listOfObject.add(validator.getObjectOfType(clazz, map));
             }
             return listOfObject;
         }
         return null;
     }
-    
+
     /**
      * reads an Object with given name
      *
@@ -78,12 +77,12 @@ public abstract class DataStore {
      * @param query
      * @return object with given name
      */
-    public <T> List<T> list(Class<T> clazz,Query query) {
-        List<Map<String, Object>> listOfMap = list(validator.getJsonSchema(clazz),query);
+    public <T> List<T> list(Class<T> clazz, Query query) {
+        List<Map<String, Object>> listOfMap = list(validator.getJsonSchema(clazz), query);
         if (listOfMap != null) {
             List<T> listOfObject = new ArrayList<>(listOfMap.size());
             for (Map<String, Object> map : listOfMap) {
-                listOfObject.add(validator.getObjectOfType(clazz,map));
+                listOfObject.add(validator.getObjectOfType(clazz, map));
             }
             return listOfObject;
         }
@@ -112,14 +111,37 @@ public abstract class DataStore {
         return update(validatedObject.getJsonSchema(), validatedObject.getDataObject());
     }
 
+    /**
+     * deletes the Object with given name
+     *
+     * @param clazz - Class of the Object
+     * @param name - name of the Object
+     * @return successFlag
+     */
     public boolean delete(Class clazz, String name) {
         return delete(validator.getJsonSchema(clazz), name);
     }
 
+    /**
+     * deletes the Objects with given query
+     *
+     * @param clazz - Class of the Object
+     * @param query - query for the Object
+     * @return successFlag
+     */
+    public boolean delete(Class clazz, Query query) {
+        return delete(validator.getJsonSchema(clazz), query);
+    }
+
+    /**
+     * gets Id field of a schema
+     *
+     * @param jsonSchema
+     * @return
+     */
     protected String getIdField(JsonSchema jsonSchema) {
         String idField = null;
         String idValue;
-
         Map<String, JsonSchema> properties = jsonSchema.asObjectSchema().getProperties();
         for (Map.Entry<String, JsonSchema> property : properties.entrySet()) {
             idValue = property.getValue().getId();
@@ -166,6 +188,15 @@ public abstract class DataStore {
     /**
      *
      * @param jsonSchema
+     * @param query
+     * @return
+     */
+    public abstract boolean delete(JsonSchema jsonSchema,
+            Query query);
+
+    /**
+     *
+     * @param jsonSchema
      * @param validatedDataObject
      * @return
      */
@@ -178,13 +209,14 @@ public abstract class DataStore {
      * @return
      */
     public abstract List<Map<String, Object>> list(JsonSchema jsonSchema);
-    
+
     /**
      *
      * @param jsonSchema
      * @param query
      * @return
      */
-    public abstract List<Map<String, Object>> list(JsonSchema jsonSchema,Query query);
+    public abstract List<Map<String, Object>> list(JsonSchema jsonSchema,
+            Query query);
 
 }

@@ -95,11 +95,18 @@ public class MongoDataStore extends DataStore {
         }
         return null;
     }
+    
+    @Override
+    public boolean delete(JsonSchema jsonSchema, Query query) {
+        String idField = getIdField(jsonSchema);
+        db.getCollection(jsonSchema.getId()).remove(getQueryObject(idField,query));        
+        return true;
+    }
 
     @Override
     public List<Map<String, Object>> list(JsonSchema jsonSchema, Query query) {
         String idField = getIdField(jsonSchema);
-        List<DBObject> dBObjects = db.getCollection(jsonSchema.getId()).find(getQueryObject(query)).toArray();
+        List<DBObject> dBObjects = db.getCollection(jsonSchema.getId()).find(getQueryObject(idField,query)).toArray();
         if (dBObjects != null) {
             List<Map<String, Object>> listOfMap = new ArrayList<>(dBObjects.size());
             for (DBObject dBObject : dBObjects) {
@@ -116,14 +123,18 @@ public class MongoDataStore extends DataStore {
         return dataMap;
     }
 
-    private DBObject getQueryObject(Query query) {
+    private DBObject getQueryObject(String idField,Query query) {
         BasicDBObject queryObject = new BasicDBObject();
-
+        String filterName ;
         List<Filter> filters = query.getFilters();
         for (Filter filter : filters) {
+            filterName = filter.getName();
+            if(idField.equals(filterName)) {
+                filterName = ID_FIELD;
+            }
             switch (filter.getOperator()) {
                 case EQUALS:
-                    queryObject.append(filter.getName(), filter.getValue());
+                    queryObject.append(filterName, filter.getValue());
                     break;
             }
 
@@ -131,5 +142,7 @@ public class MongoDataStore extends DataStore {
 
         return queryObject;
     }
+
+    
 
 }
