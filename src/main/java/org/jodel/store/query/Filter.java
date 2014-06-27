@@ -63,6 +63,18 @@ public class Filter<T> {
         this.operator = operator;
         this.value = value;
     }
+    
+    /**
+     * Intialize the Filter without value
+     *
+     * @param name
+     * @param operator
+     */
+    public Filter(String name, Operator operator) {
+        this.name = name;
+        this.operator = operator;
+        this.value = null;
+    }
 
     /**
      * gets name of the filter

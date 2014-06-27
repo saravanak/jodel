@@ -144,7 +144,7 @@ public class MongoDataStore extends DataStore {
                     queryObject.append(filterName, filter.getValue());
                     break;
                 case IS_NULL:
-                    queryObject.append(filterName, "$not");
+                    queryObject.append(filterName, new BasicDBObject("$exists",false));
                     break;
             }
 
