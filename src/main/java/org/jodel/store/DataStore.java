@@ -65,7 +65,7 @@ public abstract class DataStore {
      */
     public <T> List<T> list(Class<T> clazz) {
         List<Map<String, Object>> listOfMap = list(validator.getJsonSchema(clazz));
-        if (listOfMap != null) {
+        if (listOfMap != null && !listOfMap.isEmpty()) {
             List<T> listOfObject = new ArrayList<>(listOfMap.size());
             for (Map<String, Object> map : listOfMap) {
                 listOfObject.add(validator.getObjectOfType(clazz, map));
@@ -85,7 +85,7 @@ public abstract class DataStore {
      */
     public <T> List<T> list(Class<T> clazz, Query query) {
         List<Map<String, Object>> listOfMap = list(validator.getJsonSchema(clazz), query);
-        if (listOfMap != null) {
+        if (listOfMap != null && !listOfMap.isEmpty()) {
             List<T> listOfObject = new ArrayList<>(listOfMap.size());
             for (Map<String, Object> map : listOfMap) {
                 listOfObject.add(validator.getObjectOfType(clazz, map));

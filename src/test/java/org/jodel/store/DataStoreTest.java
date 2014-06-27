@@ -5,7 +5,9 @@
  */
 package org.jodel.store;
 
+import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.jodel.domain.Category;
 import org.jodel.store.mongo.MongoDataStore;
@@ -32,17 +34,23 @@ public class DataStoreTest {
      */
     @Test
     public void testCreate() {
-        Category readCategory = dataStore.read(Category.class,category.getName());
+        Category readCategory = dataStore.read(Category.class, category.getName());
         assertThat("Created Category ", (readCategory != null));
     }
 
     @Test
     public void testUpdate() {
-        Category readCategory = dataStore.read(Category.class,category.getName());
+        Category readCategory = dataStore.read(Category.class, category.getName());
         readCategory.setDescription("Description2");
         dataStore.update(readCategory);
-        Category updatedCategory = dataStore.read(Category.class,readCategory.getName());
+        Category updatedCategory = dataStore.read(Category.class, readCategory.getName());
         assertThat("Updated Category ", updatedCategory.getDescription(), equalTo("Description2"));
+    }
+
+    @Test
+    public void testList() {
+       List<Category> categories = dataStore.list(Category.class);
+       assertThat("Listed Categories ", (categories == null), equalTo(false));
     }
 
     @Before
@@ -51,12 +59,12 @@ public class DataStoreTest {
         category.setName("header");
         category.setLabel("Header");
         category.setDescription("Description");
-        dataStore.create(Category.class,category);
+        dataStore.create(Category.class, category);
     }
 
     @After
     public void after() {
-        dataStore.delete(Category.class,category.getName());
+        dataStore.delete(Category.class, category.getName());
     }
 
 }

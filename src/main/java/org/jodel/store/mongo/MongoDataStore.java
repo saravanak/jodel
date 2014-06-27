@@ -134,6 +134,7 @@ public class MongoDataStore extends DataStore {
         String filterName ;
         List<Filter> filters = query.getFilters();
         for (Filter filter : filters) {
+            // Process ID Field
             filterName = filter.getName();
             if(idField.equals(filterName)) {
                 filterName = ID_FIELD;
@@ -141,6 +142,9 @@ public class MongoDataStore extends DataStore {
             switch (filter.getOperator()) {
                 case EQUALS:
                     queryObject.append(filterName, filter.getValue());
+                    break;
+                case IS_NULL:
+                    queryObject.append(filterName, "$not");
                     break;
             }
 
