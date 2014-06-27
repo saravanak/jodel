@@ -44,7 +44,7 @@ public class ValidatorTest {
     @Test
     public void testGetObjectFromPOJO() throws IOException {
         System.out.println("\nPOJO Based");
-        Map<String, Object> stringDataObject = jSONUtil.getJsonStringObject("sample");
+        Map<String, Object> stringDataObject = jSONUtil.getJsonStringObject("category");
         ValidatedObject validatedObject = validator.getObject(Category.class, stringDataObject);
         System.out.println("Schema " + jSONUtil.getAsJsonString(validatedObject.getJsonSchema()));
         System.out.println("stringDataObject " + jSONUtil.getAsJsonString(stringDataObject));
