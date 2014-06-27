@@ -16,14 +16,25 @@ public class Query {
 
     private final List<Filter> filters;
 
+    /**
+     * Intialize with default values
+     */
     public Query() {
         this.filters = new ArrayList<>();
     }
 
+    /**
+     * gets filters from the query
+     * @return 
+     */
     public List<Filter> getFilters() {
         return filters;
     }
 
+    /**
+     * Adds a Filter to the query
+     * @param filter 
+     */
     public void addFilter(Filter filter) {
         filters.add(filter);
     }

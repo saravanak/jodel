@@ -12,11 +12,38 @@ package org.jodel.store.query;
  */
 public class Filter<T> {
 
+    /**
+     * Describes Operator for Filters
+     */
     public enum Operator {
+
+        /**
+         * Compare with =
+         */
         EQUALS,
-        GREATER,
-        LESSER,
+        /**
+         * Compare with >
+         */
+        GREATER_THAN,
+        /**
+         * Compare with >=
+         */
+        GREATER_THAN_EQUALS,
+        /**
+         * Compare with <
+         */
+        LESSER_THAN,
+        /**
+         * Compare with <=
+         */
+        LESSER_THAN_EQUALS,
+        /**
+         * Compare with Null value
+         */
         IS_NULL,
+        /**
+         * Check not Null
+         */
         IS_NOTNULL
     }
 
@@ -24,20 +51,42 @@ public class Filter<T> {
     private final Operator operator;
     private final T value;
 
+    /**
+     * Intialize the Filter
+     *
+     * @param name
+     * @param operator
+     * @param value
+     */
     public Filter(String name, Operator operator, T value) {
         this.name = name;
         this.operator = operator;
         this.value = value;
     }
 
+    /**
+     * gets name of the filter
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets operator of the Filter
+     *
+     * @return
+     */
     public Operator getOperator() {
         return operator;
     }
 
+    /**
+     * gets value of the Filter
+     *
+     * @return
+     */
     public T getValue() {
         return value;
     }

@@ -26,7 +26,7 @@ import org.jodel.store.query.Query;
 import static org.jodel.store.query.Filter.Operator.*;
 
 /**
- *
+ * Data Store implementation using MongoDB
  * @author sathish_ku
  */
 public class MongoDataStore extends DataStore {
@@ -35,6 +35,9 @@ public class MongoDataStore extends DataStore {
 
     private DB db;
 
+    /**
+     * intialize with default MongoDB configuration
+     */
     public MongoDataStore() {
         try {
             MongoClient mongoClient = new MongoClient();

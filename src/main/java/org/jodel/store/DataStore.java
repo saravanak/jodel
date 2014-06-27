@@ -14,13 +14,19 @@ import org.jodel.validator.ValidatedObject;
 import org.jodel.validator.Validator;
 
 /**
- *
+ * Data Store is used to Store static and Dynamic Objects using JSON Schema
  * @author sathish_ku
  */
 public abstract class DataStore {
 
+    /**
+     * JSON Schema validator
+     */
     protected final Validator validator;
 
+    /**
+     * Intialize the DataStore with JSON Schema validator
+     */
     public DataStore() {
         validator = new Validator();
     }
