@@ -59,14 +59,16 @@ public class MongoDataStore extends DataStore {
     }
 
     @Override
-    public Map<String, Object> read(JsonSchema jsonSchema, String idValue) {
-        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));
+    public Map<String, Object> read(JsonSchema jsonSchema, String idValue) {        
+        Object idFieldValue = ObjectId.isValid(idValue) ? new ObjectId(idValue) : idValue;        
+        DBObject query = new BasicDBObject(ID_FIELD, idFieldValue);
         return getDataMap(db.getCollection(jsonSchema.getId()).findOne(query), getIdField(jsonSchema));
     }
 
     @Override
     public boolean delete(JsonSchema jsonSchema, String idValue) {
-        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idValue));
+        Object idFieldValue = ObjectId.isValid(idValue) ? new ObjectId(idValue) : idValue;        
+        DBObject query = new BasicDBObject(ID_FIELD, idFieldValue);
         db.getCollection(jsonSchema.getId()).remove(query);
         return true;
     }
@@ -74,9 +76,10 @@ public class MongoDataStore extends DataStore {
     @Override
     public boolean update(JsonSchema jsonSchema, Map<String, Object> validatedDataObject) {
         String idField = getIdField(jsonSchema);
-        Object idFieldValue = validatedDataObject.get(idField);
+        String idValue = validatedDataObject.get(idField).toString();
+        Object idFieldValue = ObjectId.isValid(idValue) ? new ObjectId(idValue) : idValue; 
         validatedDataObject.remove(idField);
-        DBObject query = new BasicDBObject(ID_FIELD, new ObjectId(idFieldValue.toString()));
+        DBObject query = new BasicDBObject(ID_FIELD, idFieldValue);
         DBObject dBObject = new BasicDBObject(validatedDataObject);
         db.getCollection(jsonSchema.getId()).findAndModify(query, (dBObject));
         return true;
