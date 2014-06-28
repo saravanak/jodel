@@ -67,7 +67,9 @@ public class Validator {
             for (Map.Entry<String, Object> dataProperty : jsonData.entrySet()) {
                 String key = dataProperty.getKey();
                 Object value = dataProperty.getValue();
-                validatedData.put(key, getConvertedObject(properties.get(key), value));
+                if(value != null && !value.toString().isEmpty() ) {
+                    validatedData.put(key, getConvertedObject(properties.get(key), value));
+                }                
             }
         }
         return validatedData;

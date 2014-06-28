@@ -50,15 +50,14 @@ public class DataStoreTest {
     @Test
     public void testList() {
        List<Category> categories = dataStore.list(Category.class);
-       assertThat("Listed Categories ", (categories == null), equalTo(false));
+       assertThat("Listed Categories ", categories.size(), equalTo(1));
     }
 
     @Before
     public void setUp() {
         category = new Category();
         category.setName("header");
-        category.setLabel("Header");
-        category.setDescription("Description");
+        category.setLabel("Header");  
         dataStore.create(Category.class, category);
     }
 
