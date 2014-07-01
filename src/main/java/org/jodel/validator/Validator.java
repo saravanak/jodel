@@ -5,6 +5,7 @@
  */
 package org.jodel.validator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes.OBJECT;
@@ -34,7 +35,7 @@ public class Validator {
         return objectMapper.convertValue(dataMap, type);
     }
 
-    public ValidatedObject getObject(Object dataObj)  {
+    public ValidatedObject getObject(Object dataObj) {
         ValidatedObject validatedObject = null;
         if (dataObj != null) {
             validatedObject = getObject(dataObj.getClass(), objectMapper.convertValue(dataObj, Map.class));
@@ -42,7 +43,7 @@ public class Validator {
         return validatedObject;
     }
 
-    public ValidatedObject getObject(Class type, Map<String, Object> jsonData)  {
+    public ValidatedObject getObject(Class type, Map<String, Object> jsonData) {
         JsonSchema jsonSchema = getJsonSchema(type);
         return new ValidatedObject(jsonSchema, getObject(jsonSchema, jsonData));
     }
@@ -67,9 +68,9 @@ public class Validator {
             for (Map.Entry<String, Object> dataProperty : jsonData.entrySet()) {
                 String key = dataProperty.getKey();
                 Object value = dataProperty.getValue();
-                if(value != null && !value.toString().isEmpty() ) {
+                if (value != null && !value.toString().isEmpty()) {
                     validatedData.put(key, getConvertedObject(properties.get(key), value));
-                }                
+                }
             }
         }
         return validatedData;
@@ -101,8 +102,13 @@ public class Validator {
         }
     }
 
-    private JsonSchema getJsonSchema(String jsonSchemaAsString) throws IOException {
-        JsonSchema schema = objectMapper.readValue(jsonSchemaAsString, JsonSchema.class);
+    public JsonSchema getJsonSchema(String jsonSchemaAsString) {
+        JsonSchema schema = null;
+        try {
+            schema = objectMapper.readValue(jsonSchemaAsString, JsonSchema.class);
+        } catch (IOException ex) {
+            Logger.getLogger(Validator.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return schema;
     }
 
@@ -132,6 +138,16 @@ public class Validator {
                 break;
         }
         return convertedValue;
+    }
+
+    public String getAsJsonString(Object object) {
+        String asString = null;
+        try {
+            asString = objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(Validator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return asString;
     }
 
 }

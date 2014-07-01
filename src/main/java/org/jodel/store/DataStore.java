@@ -9,12 +9,14 @@ import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.jodel.store.domain.Schema;
 import org.jodel.store.query.Query;
 import org.jodel.validator.ValidatedObject;
 import org.jodel.validator.Validator;
 
 /**
  * Data Store is used to Store static and Dynamic Objects using JSON Schema
+ *
  * @author sathish_ku
  */
 public abstract class DataStore {
@@ -29,6 +31,47 @@ public abstract class DataStore {
      */
     public DataStore() {
         validator = new Validator();
+    }
+
+    public JsonSchema create(JsonSchema jsonSchema) {
+        Schema schema = new Schema();
+        schema.setSchema(validator.getAsJsonString(jsonSchema));
+        schema = create(Schema.class, schema);
+        JsonSchema addedJsonSchema = validator.getJsonSchema(schema.getSchema());
+        addedJsonSchema.setId(schema.getName());
+        return addedJsonSchema;
+    }
+
+    public JsonSchema read(String schemaName) {
+        Schema schema = read(Schema.class, schemaName);
+        JsonSchema addedJsonSchema = validator.getJsonSchema(schema.getSchema());
+        addedJsonSchema.setId(schemaName);
+        return addedJsonSchema;
+    }
+
+    public boolean delete(String schemaName) {
+        return delete(Schema.class, schemaName);
+    }
+    
+    public boolean update(JsonSchema jsonSchema) {
+        Schema schema = read(Schema.class, jsonSchema.getId());
+        schema.setSchema(validator.getAsJsonString(jsonSchema));
+        return update(schema);
+    }
+
+    public List<JsonSchema> list() {
+        List<Schema> schemas = list(Schema.class);
+        if (schemas != null) {
+            List<JsonSchema> jsonSchemas = new ArrayList<>(schemas.size());
+            JsonSchema addedJsonSchema;
+            for (Schema schema : schemas) {
+                addedJsonSchema = validator.getJsonSchema(schema.getSchema());
+                addedJsonSchema.setId(schema.getName());
+                jsonSchemas.add(addedJsonSchema);
+            }
+            return jsonSchemas;
+        }
+        return null;
     }
 
     /**
