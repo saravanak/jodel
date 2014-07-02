@@ -48,7 +48,7 @@ public class Validator {
         return new ValidatedObject(jsonSchema, getObject(jsonSchema, jsonData));
     }
 
-    public ValidatedObject getObject(String jsonSchemaAsString, Map<String, Object> jsonData) throws IOException {
+    public ValidatedObject getObject(String jsonSchemaAsString, Map<String, Object> jsonData) {
         JsonSchema jsonSchema = getJsonSchema(jsonSchemaAsString);
         return new ValidatedObject(jsonSchema, getObject(jsonSchema, jsonData));
     }

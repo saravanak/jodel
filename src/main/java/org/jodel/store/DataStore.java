@@ -32,47 +32,29 @@ public abstract class DataStore {
     public DataStore() {
         validator = new Validator();
     }
-
-    public JsonSchema create(JsonSchema jsonSchema) {
-        Schema schema = new Schema();
-        schema.setSchema(validator.getAsJsonString(jsonSchema));
-        schema = create(Schema.class, schema);
-        JsonSchema addedJsonSchema = validator.getJsonSchema(schema.getSchema());
-        addedJsonSchema.setId(schema.getName());
-        return addedJsonSchema;
-    }
-
-    public JsonSchema read(String schemaName) {
-        Schema schema = read(Schema.class, schemaName);
-        JsonSchema addedJsonSchema = validator.getJsonSchema(schema.getSchema());
-        addedJsonSchema.setId(schemaName);
-        return addedJsonSchema;
-    }
-
-    public boolean delete(String schemaName) {
-        return delete(Schema.class, schemaName);
+    
+    public Map<String, Object> create(String schemaName,Map<String, Object> jsonData) {
+        Schema schema = read(Schema.class,schemaName);
+        ValidatedObject validatedObject = validator.getObject(schema.getSchema(),jsonData);
+        return create(validatedObject.getJsonSchema(), validatedObject.getDataObject());
     }
     
-    public boolean update(JsonSchema jsonSchema) {
-        Schema schema = read(Schema.class, jsonSchema.getId());
-        schema.setSchema(validator.getAsJsonString(jsonSchema));
-        return update(schema);
+    public Map<String, Object> read(String schemaName, String name) {        
+        return read(read(schemaName), name);
+    }
+    
+
+    public boolean update(String schemaName,Map<String, Object> jsonData) {
+        Schema schema = read(Schema.class,schemaName);
+        ValidatedObject validatedObject = validator.getObject(schema.getSchema(),jsonData);
+        return update(validatedObject.getJsonSchema(), validatedObject.getDataObject());
     }
 
-    public List<JsonSchema> list() {
-        List<Schema> schemas = list(Schema.class);
-        if (schemas != null) {
-            List<JsonSchema> jsonSchemas = new ArrayList<>(schemas.size());
-            JsonSchema addedJsonSchema;
-            for (Schema schema : schemas) {
-                addedJsonSchema = validator.getJsonSchema(schema.getSchema());
-                addedJsonSchema.setId(schema.getName());
-                jsonSchemas.add(addedJsonSchema);
-            }
-            return jsonSchemas;
-        }
-        return null;
+
+    public boolean delete(String schemaName, String name) {
+        return delete(read(schemaName), name);
     }
+
 
     /**
      * Creates a new object
@@ -200,6 +182,51 @@ public abstract class DataStore {
             }
         }
         return idField;
+    }
+
+    /**
+     * Schema Related Methods
+     */
+    public JsonSchema create(JsonSchema jsonSchema) {
+        Schema schema = new Schema();
+        schema.setName(jsonSchema.getId());
+        schema.setSchema(validator.getAsJsonString(jsonSchema));
+        schema = create(Schema.class, schema);
+        JsonSchema addedJsonSchema = validator.getJsonSchema(schema.getSchema());
+        addedJsonSchema.setId(schema.getName());
+        return addedJsonSchema;
+    }
+
+    public JsonSchema read(String schemaName) {
+        Schema schema = read(Schema.class, schemaName);
+        JsonSchema addedJsonSchema = validator.getJsonSchema(schema.getSchema());
+        addedJsonSchema.setId(schemaName);
+        return addedJsonSchema;
+    }
+
+    public boolean delete(String schemaName) {
+        return delete(Schema.class, schemaName);
+    }
+
+    public boolean update(JsonSchema jsonSchema) {
+        Schema schema = read(Schema.class, jsonSchema.getId());
+        schema.setSchema(validator.getAsJsonString(jsonSchema));
+        return update(schema);
+    }
+
+    public List<JsonSchema> list() {
+        List<Schema> schemas = list(Schema.class);
+        if (schemas != null) {
+            List<JsonSchema> jsonSchemas = new ArrayList<>(schemas.size());
+            JsonSchema addedJsonSchema;
+            for (Schema schema : schemas) {
+                addedJsonSchema = validator.getJsonSchema(schema.getSchema());
+                addedJsonSchema.setId(schema.getName());
+                jsonSchemas.add(addedJsonSchema);
+            }
+            return jsonSchemas;
+        }
+        return null;
     }
 
     /**
