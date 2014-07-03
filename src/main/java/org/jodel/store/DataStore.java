@@ -50,9 +50,12 @@ public abstract class DataStore {
         return update(validatedObject.getJsonSchema(), validatedObject.getDataObject());
     }
 
-
     public boolean delete(String schemaName, String name) {
         return delete(read(schemaName), name);
+    }
+    
+    public List<Map<String, Object>> list(String schemaName) {
+        return list(read(schemaName));
     }
 
 
@@ -238,7 +241,7 @@ public abstract class DataStore {
      * @param jsonSchema
      * @return
      */
-    public abstract Map<String, Object> create(
+    protected abstract Map<String, Object> create(
             JsonSchema jsonSchema,
             Map<String, Object> validatedDataObject);
 
@@ -248,7 +251,7 @@ public abstract class DataStore {
      * @param idValue
      * @return
      */
-    public abstract Map<String, Object> read(
+    protected abstract Map<String, Object> read(
             JsonSchema jsonSchema,
             String idValue);
 
@@ -258,7 +261,7 @@ public abstract class DataStore {
      * @param idValue
      * @return
      */
-    public abstract boolean delete(JsonSchema jsonSchema,
+    protected abstract boolean delete(JsonSchema jsonSchema,
             String idValue);
 
     /**
@@ -267,7 +270,7 @@ public abstract class DataStore {
      * @param query
      * @return
      */
-    public abstract boolean delete(JsonSchema jsonSchema,
+    protected abstract boolean delete(JsonSchema jsonSchema,
             Query query);
 
     /**
@@ -276,7 +279,7 @@ public abstract class DataStore {
      * @param validatedDataObject
      * @return
      */
-    public abstract boolean update(JsonSchema jsonSchema,
+    protected abstract boolean update(JsonSchema jsonSchema,
             Map<String, Object> validatedDataObject);
 
     /**
@@ -284,7 +287,7 @@ public abstract class DataStore {
      * @param jsonSchema
      * @return
      */
-    public abstract List<Map<String, Object>> list(JsonSchema jsonSchema);
+    protected abstract List<Map<String, Object>> list(JsonSchema jsonSchema);
 
     /**
      *
@@ -292,7 +295,7 @@ public abstract class DataStore {
      * @param query
      * @return
      */
-    public abstract List<Map<String, Object>> list(JsonSchema jsonSchema,
+    protected abstract List<Map<String, Object>> list(JsonSchema jsonSchema,
             Query query);
 
 }
